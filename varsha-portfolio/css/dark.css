@@ -1,0 +1,158 @@
+/* Dark blueprint theme: loads after style.css and overrides its tokens.
+   Idea: a night-time drafting table. The grid lights up around your cursor. */
+
+:root {
+  --paper: #070B14;
+  --paper-deep: #0C1322;
+  --panel: #0E1730;
+  --ink: #E8EEFB;
+  --muted: #93A3C4;
+  --blue: #7FA2FF;
+  --line: #243456;
+  --line-hi: #3A5099;
+  --signal: #FF7A33;
+  --dim: #7FA2FF;
+}
+
+body {
+  background-attachment: fixed;
+  background-image:
+    linear-gradient(rgba(127, 162, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127, 162, 255, 0.06) 1px, transparent 1px);
+}
+
+/* Spotlight: a brighter copy of the grid revealed around the cursor */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(127, 162, 255, 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127, 162, 255, 0.5) 1px, transparent 1px);
+  background-size: 40px 40px;
+  -webkit-mask-image: radial-gradient(circle 280px at var(--mx, 72%) var(--my, 28%), #000 0, transparent 100%);
+  mask-image: radial-gradient(circle 280px at var(--mx, 72%) var(--my, 28%), #000 0, transparent 100%);
+}
+@media (hover: none) { body::before { display: none; } }
+
+/* ---------- Places where ink was used as a fill ---------- */
+.skip-link, .copy-btn, .btn-light { color: #070B14; }
+.btn-primary { background: var(--signal); border-color: var(--signal); color: #0A0F1C; }
+.btn-primary:hover { background: #FFA066; border-color: #FFA066; color: #0A0F1C; }
+.btn-outline { border-color: var(--line-hi); }
+.btn-outline:hover { background: var(--ink); border-color: var(--ink); color: #070B14; }
+.btn-light:hover, .copy-btn:hover { color: #fff; }
+
+.site-header { background: rgba(7, 11, 20, 0.82); }
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 2px;
+  background: var(--signal);
+  transform-origin: left;
+  transform: scaleX(var(--progress, 0));
+}
+.site-nav { background-color: transparent; }
+
+/* ---------- Glowing dimension lines ---------- */
+.dim { border-color: var(--dim); }
+.dim-line { background: var(--dim); box-shadow: 0 0 10px rgba(127, 162, 255, 0.55); }
+.dim-line:first-child::before { border-right-color: var(--dim); }
+.dim-line:last-child::after { border-left-color: var(--dim); }
+
+.hero h1 { text-shadow: 0 0 48px rgba(127, 162, 255, 0.35); }
+
+/* ---------- Title block ---------- */
+.title-block {
+  position: relative;
+  overflow: hidden;
+  border-color: var(--line-hi);
+  box-shadow: 0 0 60px rgba(60, 100, 255, 0.18), inset 0 0 0 1px rgba(127, 162, 255, 0.08);
+}
+.tb-head { background: #16234A; border-bottom: 1px solid var(--line-hi); }
+.title-block::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: var(--dim);
+  box-shadow: 0 0 18px 4px rgba(127, 162, 255, 0.7);
+  pointer-events: none;
+  animation: scan 1.7s ease-in 0.6s 1 both;
+}
+@keyframes scan { 0% { top: 0; opacity: 1; } 100% { top: 100%; opacity: 0; } }
+
+.tb-status .dot { animation: pulse 2.2s ease-out infinite; }
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 122, 51, 0.6); }
+  70%, 100% { box-shadow: 0 0 0 10px rgba(255, 122, 51, 0); }
+}
+
+/* ---------- Surfaces and structure ---------- */
+.section-alt { background: rgba(12, 19, 34, 0.72); }
+.schedule, .feature, .tracker { border-color: var(--line-hi); }
+.feature { box-shadow: 0 0 50px rgba(60, 100, 255, 0.1); }
+.project-list, .cert-list { border-top-color: var(--line-hi); }
+
+.timeline::before, .bullets li::before { background: var(--dim); }
+.timeline > li::before { border-color: var(--dim); background: var(--paper); }
+.timeline > li:first-child::before { background: var(--signal); }
+
+.steps li.is-done .step-mark { background: var(--dim); border-color: var(--dim); }
+.steps li.is-done:not(:last-child)::after { background: var(--dim); }
+.steps li.is-current .step-mark { border-color: var(--signal); box-shadow: 0 0 12px rgba(255, 122, 51, 0.7); }
+
+.tags li { background: rgba(127, 162, 255, 0.08); border-color: var(--line-hi); }
+
+/* Project rows light up on hover */
+.project-row { position: relative; transition: background-color 0.2s ease; }
+.project-row::before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--signal);
+  transform: scaleY(0);
+  transition: transform 0.25s ease;
+}
+.project-row:hover { background: rgba(127, 162, 255, 0.05); }
+.project-row:hover::before { transform: scaleY(1); }
+
+/* ---------- Contact ---------- */
+.contact {
+  background-color: #0A1230;
+  background-image:
+    radial-gradient(circle at 85% 15%, rgba(60, 100, 255, 0.4), transparent 55%),
+    linear-gradient(rgba(127, 162, 255, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127, 162, 255, 0.14) 1px, transparent 1px);
+  background-size: auto, 40px 40px, 40px 40px;
+  border-top: 1px solid var(--line-hi);
+}
+.contact-list { background: rgba(7, 11, 20, 0.55); border-top-color: var(--dim); }
+
+/* ---------- Section headers draw themselves once when scrolled into view ---------- */
+.js-ready .sec-head .dim-line {
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.js-ready .sec-head .dim-label { opacity: 0; transition: opacity 0.5s ease 0.5s; }
+.js-ready .sec-head.is-in .dim-line { transform: scaleX(1); }
+.js-ready .sec-head.is-in .dim-label { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .title-block::after { display: none; }
+  .tb-status .dot { animation: none; }
+  .js-ready .sec-head .dim-line { transform: none; transition: none; }
+  .js-ready .sec-head .dim-label { opacity: 1; transition: none; }
+  .project-row, .project-row::before { transition: none; }
+}
